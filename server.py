@@ -1,24 +1,24 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# Clés valides en mémoire (à remplacer par une base de données si besoin)
-valid_keys = {
+LICENSE_KEYS = {
     "ccarre": True,
-    "test123": True,
-    "demo": False  # désactivée
+    "abc123": True,
+    "expiredkey": False
 }
 
-@app.route("/validate", methods=["POST"])
-def validate_key():
-    data = request.get_json()
-    key = data.get("key", "")
-    is_valid = valid_keys.get(key, False)
-    return jsonify({"valid": is_valid})
-
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    return "Serveur LaVisu en ligne", 200
+    return "✅ Serveur LaVisu en ligne", 200
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+@app.route("/validate", methods=["GET", "POST"])
+def validate_key():
+    if request.method == "GET":
+        return "✅ endpoint /validate opérationnel (GET d'essai)", 200
+    data = request.get_json() or {}
+    key = data.get("key", "")
+    valid = LICENSE_KEYS.get(key, False)
+    return jsonify({"valid": valid}), (200 if valid else 401)
