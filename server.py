@@ -22,6 +22,3 @@ def validate_key():
     is_valid = LICENSE_KEYS.get(key, False)
     return jsonify({"valid": is_valid})
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Pour Render
-    app.run(host="0.0.0.0", port=port)
